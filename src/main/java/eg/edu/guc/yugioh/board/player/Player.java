@@ -21,7 +21,7 @@ public class Player implements Duelist {
 
 	private final String name;
 	private int lifePoints;
-	private Field field;
+	private final Field field;
 	private boolean addedMonsterThisTurn;
 	private Color colorHud;
 	private String imagePath;
@@ -53,11 +53,7 @@ public class Player implements Duelist {
 
 	}
 
-	@Override
-	public boolean summonMonster(MonsterCard monster) {
-
-		Logger.logs().info("Player - summonMonster monster name: " + monster.getName() );
-
+	private boolean performMonsterPlacement(MonsterCard monster, ArrayList<MonsterCard> sacrifices, Mode mode, boolean isSet) {
 		if (Card.getBoard().isGameOver())
 			return false;
 
@@ -67,16 +63,22 @@ public class Player implements Duelist {
 		if (addedMonsterThisTurn)
 			throw new MultipleMonsterAdditionException();
 
-		boolean monsterAdded = this.field.addMonsterToField(monster,
-				Mode.ATTACK, false);
+		boolean monsterAdded = (sacrifices == null)
+				? this.field.addMonsterToField(monster, mode, isSet)
+				: this.field.addMonsterToField(monster, mode, sacrifices);
 
 		if (!monsterAdded)
 			return false;
 
 		addedMonsterThisTurn = true;
-
 		return true;
+	}
 
+	@Override
+	public boolean summonMonster(MonsterCard monster) {
+
+		Logger.logs().info("Player - summonMonster monster name: " + monster.getName() );
+		return performMonsterPlacement(monster, null, Mode.ATTACK, false);
 	}
 
 	@Override
@@ -84,52 +86,14 @@ public class Player implements Duelist {
 			ArrayList<MonsterCard> sacrifices) {
 
 		Logger.logs().info("Player - summonMonster monster name: " + monster.getName() + "sacrifices: " + sacrifices.size());
-
-		if (Card.getBoard().isGameOver())
-			return false;
-
-		if (this != Card.getBoard().getActivePlayer())
-			return false;
-
-		if (addedMonsterThisTurn)
-			throw new MultipleMonsterAdditionException();
-
-		boolean monsterAdded = this.field.addMonsterToField(monster,
-				Mode.ATTACK, sacrifices);
-
-		if (!monsterAdded)
-			return false;
-
-		addedMonsterThisTurn = true;
-
-		return true;
-
+		return performMonsterPlacement(monster, sacrifices, Mode.ATTACK, false);
 	}
 
 	@Override
 	public boolean setMonster(MonsterCard monster) {
 
 		Logger.logs().info("Player - setMonster monster name: " + monster.getName() );
-
-		if (Card.getBoard().isGameOver())
-			return false;
-
-		if (this != Card.getBoard().getActivePlayer())
-			return false;
-
-		if (addedMonsterThisTurn)
-			throw new MultipleMonsterAdditionException();
-
-		boolean monsterAdded = this.field.addMonsterToField(monster,
-				Mode.DEFENSE, true);
-
-		if (!monsterAdded)
-			return false;
-
-		addedMonsterThisTurn = true;
-
-		return true;
-
+		return performMonsterPlacement(monster, null, Mode.DEFENSE, true);
 	}
 
 	@Override
@@ -137,26 +101,7 @@ public class Player implements Duelist {
 			ArrayList<MonsterCard> sacrifices) {
 
 		Logger.logs().info("Player - setMonster monster name: " + monster.getName() + " " + "sacrifices: " + sacrifices.size());
-
-		if (Card.getBoard().isGameOver())
-			return false;
-
-		if (this != Card.getBoard().getActivePlayer())
-			return false;
-
-		if (addedMonsterThisTurn)
-			throw new MultipleMonsterAdditionException();
-
-		boolean monsterAdded = this.field.addMonsterToField(monster,
-				Mode.DEFENSE, sacrifices);
-
-		if (!monsterAdded)
-			return false;
-
-		addedMonsterThisTurn = true;
-
-		return true;
-
+		return performMonsterPlacement(monster, sacrifices, Mode.DEFENSE, true);
 	}
 
 	@Override

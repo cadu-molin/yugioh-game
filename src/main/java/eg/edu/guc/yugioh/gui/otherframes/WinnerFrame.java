@@ -18,16 +18,26 @@ import eg.edu.guc.yugioh.gui.Main;
 
 @SuppressWarnings("serial")
 public class WinnerFrame extends JFrame implements ActionListener{
+
+	private static final String TITLE = "Winner!";
+	private static final String REPLAY_LABEL = "Replay";
+	private static final String EXIT_LABEL = "Exit Game";
+	private static final String CONGRATS_PREFIX = " Congratulations ";
+	private static final String CONGRATS_SUFFIX = ", You won!";
+	private static final int FRAME_WIDTH = 350;
+	private static final int FRAME_HEIGHT = 120;
+	private static final int WINNER_FONT_SIZE = 18;
+
 	JLabel winner = new JLabel();
-	JButton replayButton = new JButton("Replay");
-	JButton exitGameButton = new JButton("Exit Game");
+	JButton replayButton = new JButton(REPLAY_LABEL);
+	JButton exitGameButton = new JButton(EXIT_LABEL);
 	
 	public WinnerFrame(){
-		super("Winner!");
+		super(TITLE);
 		GUI.getBoardFrame().dispose();
-		winner.setText(" Congratulations "+Card.getBoard().getWinner().getName()+", You won!");
-		winner.setFont(new Font(winner.getFont().getName(),Font.PLAIN,18));
-		setSize(350, 120);
+		winner.setText(CONGRATS_PREFIX + Card.getBoard().getWinner().getName() + CONGRATS_SUFFIX);
+		winner.setFont(new Font(winner.getFont().getName(), Font.PLAIN, WINNER_FONT_SIZE));
+		setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		setLayout(new GridBagLayout());
 		setVisible(true);
 		setResizable(false);
@@ -50,11 +60,11 @@ public class WinnerFrame extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent arg0) {
-		if(arg0.getActionCommand().equals("Replay")){
-		GUI.getWinnerFrame().dispose();
-		Main.startNewGame();
-		}else
-		if(arg0.getActionCommand().equals("Exit Game"))
+		if(arg0.getActionCommand().equals(REPLAY_LABEL)){
+			GUI.getWinnerFrame().dispose();
+			Main.startNewGame();
+		}else if(arg0.getActionCommand().equals(EXIT_LABEL)) {
 			System.exit(0);
+		}
 	}
 }

@@ -1,17 +1,18 @@
 package eg.edu.guc.yugioh.board;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import eg.edu.guc.yugioh.board.player.Player;
 import eg.edu.guc.yugioh.cards.Card;
-import eg.edu.guc.yugioh.gui.GUI;
-import eg.edu.guc.yugioh.gui.otherframes.WinnerFrame;
 
 public class Board {
 
 	private Player activePlayer;
 	private Player opponentPlayer;
 	private Player winner;
+	private final List<WinnerListener> winnerListeners = new ArrayList<WinnerListener>();
 
 	public Board() {
 
@@ -83,8 +84,23 @@ public class Board {
 		if (isGameOver())
 			return;
 		this.winner = winner;
-		WinnerFrame x = new WinnerFrame();
-		GUI.setWinnerFrame(x);
+		notifyWinnerDeclared(winner);
+	}
+
+	public void addWinnerListener(WinnerListener listener) {
+		if (listener != null && !winnerListeners.contains(listener)) {
+			winnerListeners.add(listener);
+		}
+	}
+
+	public void removeWinnerListener(WinnerListener listener) {
+		winnerListeners.remove(listener);
+	}
+
+	private void notifyWinnerDeclared(Player winner) {
+		for (WinnerListener winnerListener : winnerListeners) {
+            winnerListener.onWinnerDeclared(winner);
+		}
 	}
 
 }
