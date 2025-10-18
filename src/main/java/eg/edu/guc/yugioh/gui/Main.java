@@ -4,9 +4,8 @@
 package eg.edu.guc.yugioh.gui;
 
 import eg.edu.guc.yugioh.board.Board;
-import eg.edu.guc.yugioh.board.WinnerListener;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
-import eg.edu.guc.yugioh.gui.otherframes.WinnerFrame;
+import eg.edu.guc.yugioh.gui.listener.WinnerGUIListener;
 
 public class Main {
 	@SuppressWarnings("unused")
@@ -17,13 +16,7 @@ public class Main {
 		Board board = new Board();
 		GUI gui = new GUI();
 
-        board.addWinnerListener(new WinnerListener() {
-			@Override
-			public void onWinnerDeclared(eg.edu.guc.yugioh.board.player.Player winner) {
-				WinnerFrame x = new WinnerFrame();
-				GUI.setWinnerFrame(x);
-			}
-		});
+        board.addWinnerListener(new WinnerGUIListener());
 	}
 
 	public static void main(String[] args) {
