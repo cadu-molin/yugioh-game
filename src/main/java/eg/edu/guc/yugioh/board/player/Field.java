@@ -7,13 +7,9 @@ import eg.edu.guc.yugioh.cards.MonsterCard;
 import eg.edu.guc.yugioh.cards.monsterEffect.MonsterEffects;
 import eg.edu.guc.yugioh.cards.spells.SpellCard;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
-import eg.edu.guc.yugioh.exceptions.DefenseMonsterAttackException;
 import eg.edu.guc.yugioh.exceptions.IllegalSpellTargetException;
-import eg.edu.guc.yugioh.exceptions.MonsterMultipleAttackException;
-import eg.edu.guc.yugioh.exceptions.NoMonsterSpaceException;
-import eg.edu.guc.yugioh.exceptions.NoSpellSpaceException;
+import eg.edu.guc.yugioh.exceptions.GameException;
 import eg.edu.guc.yugioh.exceptions.UnexpectedFormatException;
-import eg.edu.guc.yugioh.exceptions.WrongPhaseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,10 +40,10 @@ public class Field {
 			return false;
 
 		if (monstersArea.size() >= 5)
-			throw new NoMonsterSpaceException();
+			throw new GameException(GameException.Type.NO_MONSTER_SPACE);
 
 		if (phase == Phase.BATTLE)
-			throw new WrongPhaseException();
+			throw new GameException(GameException.Type.WRONG_PHASE);
 
 		hand.remove(monster);
 		monster.setHidden(isHidden);
@@ -115,10 +111,10 @@ public class Field {
 			return false;
 
 		if (spellArea.size() >= 5)
-			throw new NoSpellSpaceException();
+			throw new GameException(GameException.Type.NO_SPELL_SPACE);
 
 		if (phase == Phase.BATTLE)
-			throw new WrongPhaseException();
+			throw new GameException(GameException.Type.WRONG_PHASE);
 
 		hand.remove(spell);
 		spellArea.add(spell);
@@ -137,7 +133,7 @@ public class Field {
 			return false;
 
 		if (phase == Phase.BATTLE)
-			throw new WrongPhaseException();
+			throw new GameException(GameException.Type.WRONG_PHASE);
 
 		spell.action(monster);
 		removeSpellToGraveyard(spell);
@@ -177,13 +173,13 @@ public class Field {
 	public boolean declareAttack(MonsterCard m1, MonsterCard m2) {
 
 		if (phase != Phase.BATTLE)
-			throw new WrongPhaseException();
+			throw new GameException(GameException.Type.WRONG_PHASE);
 
 		if (m1.getMode() != Mode.ATTACK)
-			throw new DefenseMonsterAttackException();
+			throw new GameException(GameException.Type.DEFENSE_MONSTER_ATTACK);
 
 		if (m1.isAttacked())
-			throw new MonsterMultipleAttackException();
+			throw new GameException(GameException.Type.MONSTER_MULTIPLE_ATTACK);
 
 		ArrayList<MonsterCard> oppMonstersArea = Card.getBoard()
 				.getOpponentPlayer().getField().monstersArea;
@@ -258,7 +254,7 @@ public class Field {
 			return false;
 
 		if (phase == Phase.BATTLE)
-			throw new WrongPhaseException();
+			throw new GameException(GameException.Type.WRONG_PHASE);
 
 		if (monster.isSwitchedMode())
 			return false;

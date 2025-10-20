@@ -14,7 +14,7 @@ import eg.edu.guc.yugioh.cards.MonsterCard;
 import eg.edu.guc.yugioh.cards.spells.SpellCard;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
 import eg.edu.guc.yugioh.exceptions.IllegalSpellTargetException;
-import eg.edu.guc.yugioh.exceptions.MultipleMonsterAdditionException;
+import eg.edu.guc.yugioh.exceptions.GameException;
 import eg.edu.guc.yugioh.exceptions.UnexpectedFormatException;
 
 public class Player implements Duelist {
@@ -61,7 +61,7 @@ public class Player implements Duelist {
 			return false;
 
 		if (addedMonsterThisTurn)
-			throw new MultipleMonsterAdditionException();
+			throw new GameException(GameException.Type.MULTIPLE_MONSTER_ADDITION);
 
 		boolean monsterAdded = (sacrifices == null)
 				? this.field.addMonsterToField(monster, mode, isSet)
