@@ -4,9 +4,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.*;
 
+import eg.edu.guc.yugioh.board.player.Player;
 import eg.edu.guc.yugioh.cards.Card;
 import eg.edu.guc.yugioh.cards.MonsterCard;
 import eg.edu.guc.yugioh.cards.spells.SpellCard;
@@ -16,9 +19,11 @@ import eg.edu.guc.yugioh.configsGlobais.Logger;
 public class GraveyardButton extends JButton implements ActionListener {
 	private static ImageIcon graveyard = new ImageIcon("images/Graveyard.png");
 	private boolean active ;
-	private JPanel painelPrincipalActive ;
+	private final Map<Boolean, JPanel> paineisPrincipais = new HashMap<>();
 
-	private JPanel painelPrincipalOpponent;
+	private JPanel getPainel(boolean active) {
+		return paineisPrincipais.computeIfAbsent(active, k -> new JPanel());
+	}
 
 
 	public GraveyardButton(boolean active) {
@@ -57,79 +62,45 @@ public class GraveyardButton extends JButton implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		Player targetPlayer = active
+				? Card.getBoard().getActivePlayer()
+				: Card.getBoard().getOpponentPlayer();
 
-
-		if (active) {
-			Integer count = Card.getBoard().getActivePlayer().getField().getGraveyard().size();
-			if (count > 0) {
-				Double quantidade = (double) (count / 5);
-				JFrame janela = new JFrame();
-				if(painelPrincipalActive==null){
-					painelPrincipalActive = criarPanel(quantidade);
-				}else{
-					painelPrincipalActive.removeAll();
-					painelPrincipalActive.revalidate();
-					painelPrincipalActive.repaint();
-				}
-
-				for (int i = 0; i < count; i++) {
-					Card card = Card.getBoard().getActivePlayer().getField().getGraveyard().get(i);
-					if (card instanceof MonsterCard) {
-						MonsterButton cardMonster = new MonsterButton((MonsterCard) card);
-						painelPrincipalActive.add(cardMonster.getName(), cardMonster);
-					} else {
-						SpellButton spellButton = new SpellButton((SpellCard) card);
-						painelPrincipalActive.add(spellButton.getName(), spellButton);
-					}
-
-				}
-				abrirPanel(painelPrincipalActive, janela);
-			}
-
-		} else {
-			Integer count = Card.getBoard().getOpponentPlayer().getField().getGraveyard().size();
-			if (count > 0) {
-				Double quantidade = (double) (count / 5);
-				JFrame janela = new JFrame();
-				if(painelPrincipalOpponent==null) {
-					painelPrincipalOpponent = criarPanel(quantidade);
-				}else{
-					painelPrincipalOpponent.removeAll();
-					painelPrincipalOpponent.revalidate();
-					painelPrincipalOpponent.repaint();
-				}
-
-				for (int i = 0; i < count; i++) {
-					Card card = Card.getBoard().getOpponentPlayer().getField().getGraveyard().get(i);
-					if (card instanceof MonsterCard) {
-						MonsterButton cardMonster = new MonsterButton((MonsterCard) card);
-
-						painelPrincipalOpponent.add(cardMonster.getName(), cardMonster);
-					} else {
-						SpellButton spellButton = new SpellButton((SpellCard) card);
-						painelPrincipalOpponent.add(spellButton.getName(), spellButton);
-					}
-
-				}
-
-				abrirPanel(painelPrincipalOpponent, janela);
-			}
-		}
-
-
+		exibirGraveyard(targetPlayer);
 	}
 
-private JPanel criarPanel(Double quantidade){
-	GridLayout gridLayout = new GridLayout((int) Math.ceil(quantidade), 5);
-	return new JPanel(gridLayout);
-}
- private void abrirPanel(JPanel painelPrincipal,JFrame janela){
+	private void exibirGraveyard(Player player) {
+		ArrayList<Card> graveyard = player.getField().getGraveyard();
+		if (graveyard.isEmpty()) return;
 
-	 painelPrincipal.setPreferredSize(new Dimension(475,165));
-	 janela.getContentPane().add(painelPrincipal);
-	 janela.pack();
-	 janela.setLocationRelativeTo(null);
-	 janela.setVisible(true);
- }
+		int count = graveyard.size();
+		JPanel painel = criarPanel(Math.ceil(count / 5.0));
+		JFrame janela = new JFrame();
+
+		for (Card card : graveyard) {
+			painel.add(criarBotaoCarta(card));
+		}
+
+		abrirPanel(painel, janela);
+	}
+
+	private JComponent criarBotaoCarta(Card card) {
+		return (card instanceof MonsterCard)
+				? new MonsterButton((MonsterCard) card)
+				: new SpellButton((SpellCard) card);
+	}
+
+	private JPanel criarPanel(Double quantidade){
+		GridLayout gridLayout = new GridLayout((int) Math.ceil(quantidade), 5);
+		return new JPanel(gridLayout);
+	}
+	 private void abrirPanel(JPanel painelPrincipal,JFrame janela){
+
+		 painelPrincipal.setPreferredSize(new Dimension(475,165));
+		 janela.getContentPane().add(painelPrincipal);
+		 janela.pack();
+		 janela.setLocationRelativeTo(null);
+		 janela.setVisible(true);
+	 }
 
 }

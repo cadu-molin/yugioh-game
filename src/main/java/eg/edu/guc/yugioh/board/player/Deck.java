@@ -31,6 +31,9 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Deck {
+	private static final int MONSTER_QUOTA = 25;
+	private static final int MONSTER_SACRIFICE_QUOTA = 7;
+	private static final int SPELL_QUOTA = 5;
 
 	private static ArrayList<Card> monsters;
 
@@ -167,20 +170,7 @@ public class Deck {
 							path, lineNumber, cardInfo[0]);
 				}
 
-				switch (cardInfo[1]) {
-					case "Card Destruction" -> temp.add(new CardDestruction(cardInfo[1], cardInfo[2]));
-					case "Change Of Heart" -> temp.add(new ChangeOfHeart(cardInfo[1], cardInfo[2]));
-					case "Dark Hole" -> temp.add(new DarkHole(cardInfo[1], cardInfo[2]));
-					case "Graceful Dice" -> temp.add(new GracefulDice(cardInfo[1], cardInfo[2]));
-					case "Harpie's Feather Duster" -> temp.add(new HarpieFeatherDuster(cardInfo[1], cardInfo[2]));
-					case "Heavy Storm" -> temp.add(new HeavyStorm(cardInfo[1], cardInfo[2]));
-					case "Mage Power" -> temp.add(new MagePower(cardInfo[1], cardInfo[2]));
-					case "Monster Reborn" -> temp.add(new MonsterReborn(cardInfo[1], cardInfo[2]));
-					case "Pot of Greed" -> temp.add(new PotOfGreed(cardInfo[1], cardInfo[2]));
-					case "Raigeki" -> temp.add(new Raigeki(cardInfo[1], cardInfo[2]));
-					default -> throw new UnknownSpellCardException("Unknown Spell card",
-							path, lineNumber, cardInfo[1]);
-				}
+				temp.add(SimpleSpellFactory.createSpell(cardInfo[1], cardInfo[2], path, lineNumber));
 			}
 		}
 
@@ -199,95 +189,42 @@ public class Deck {
 		clone.setLocation(Location.DECK);
 		deck.add(clone);
 	}
+
 	private void addSpellDeck(SpellCard clone){
 		addClone(clone);
 	}
-
 
 	private void buildDeck(ArrayList<Card> Monsters,ArrayList<Card> MonstersSacrifices, ArrayList<Card> Spells) {
 
 		Logger.logs().info("Deck - buildDeck monstersSize: " + Monsters.size() + "Deck - buildDeck monstersSacrificesSize: " + MonstersSacrifices.size() + "spellsSize: " + Spells.size() );
 
-		int monstersQouta = 25;
-		int monsterSacrificesQouta = 7;
-		int spellsQouta = 5;
+		addRandomMonsters(monsters, MONSTER_QUOTA);
+		addRandomMonsters(monstersSacrifices, MONSTER_SACRIFICE_QUOTA);
+		addRandomSpells(spells, SPELL_QUOTA);
+	}
 
+	private void addRandomMonsters(ArrayList<Card> source, int quantity) {
+		Random r = new Random();
+		for (int i = 0; i < quantity; i++) {
+			MonsterCard monster = (MonsterCard) source.get(r.nextInt(source.size()));
+			addMonsterDeck(monster);
+		}
+	}
+
+	private void addRandomSpells(ArrayList<Card> source, int quantity) {
 		Random r = new Random();
 
-		for (; monstersQouta > 0; monstersQouta--) {
-			MonsterCard monster = (MonsterCard) monsters.get(r.nextInt(monsters.size()));
-			addMonsterDeck(monster);
-		}
+		for (int i = 0; i < quantity; i++) {
+			Card spell = source.get(r.nextInt(source.size()));
 
-		for (; monsterSacrificesQouta > 0; monsterSacrificesQouta--) {
-			MonsterCard monster = (MonsterCard) monstersSacrifices.get(r.nextInt(monstersSacrifices.size()));
-			addMonsterDeck(monster);
-		}
+			try {
+				SpellCard clone = SimpleSpellFactory.createSpell(spell.getName(), spell.getDescription(), "", 0);
 
-
-		for (; spellsQouta > 0; spellsQouta--) {
-			Card spell = spells.get(r.nextInt(spells.size()));
-			SpellCard clone;
-
-			if (spell instanceof CardDestruction) {
-				clone = new CardDestruction(spell.getName(), spell.getDescription());
 				addSpellDeck(clone);
+			} catch (UnknownSpellCardException e) {
 				continue;
 			}
 
-			if (spell instanceof ChangeOfHeart) {
-				clone = new ChangeOfHeart(spell.getName(), spell.getDescription());
-				addSpellDeck(clone);
-				continue;
-			}
-
-			if (spell instanceof DarkHole) {
-				clone = new DarkHole(spell.getName(), spell.getDescription());
-				addSpellDeck(clone);
-				continue;
-			}
-
-			if (spell instanceof GracefulDice) {
-				clone = new GracefulDice(spell.getName(), spell.getDescription());
-				addSpellDeck(clone);
-				continue;
-			}
-
-			if (spell instanceof HarpieFeatherDuster) {
-				clone = new HarpieFeatherDuster(spell.getName(), spell.getDescription());
-				addSpellDeck(clone);
-				continue;
-			}
-
-			if (spell instanceof HeavyStorm) {
-				clone = new HeavyStorm(spell.getName(), spell.getDescription());
-				addSpellDeck(clone);
-				continue;
-			}
-
-			if (spell instanceof MagePower) {
-				clone = new MagePower(spell.getName(), spell.getDescription());
-				addSpellDeck(clone);
-				continue;
-			}
-
-			if (spell instanceof MonsterReborn) {
-				clone = new MonsterReborn(spell.getName(), spell.getDescription());
-				addSpellDeck(clone);
-				continue;
-			}
-
-			if (spell instanceof PotOfGreed) {
-				clone = new PotOfGreed(spell.getName(), spell.getDescription());
-				addSpellDeck(clone);
-				continue;
-			}
-
-			if (spell instanceof Raigeki) {
-				clone = new Raigeki(spell.getName(), spell.getDescription());
-				addSpellDeck(clone);
-				continue;
-			}
 		}
 	}
 
