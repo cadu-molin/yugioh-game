@@ -19,17 +19,17 @@ public class Field {
 
 	private Phase phase = Phase.MAIN1;
 	private final Deck deck;
-	private ArrayList<MonsterCard> monstersArea;
-	private ArrayList<SpellCard> spellArea;
-	private ArrayList<Card> hand;
-	private ArrayList<Card> graveyard;
+	private final ArrayList<MonsterCard> monstersArea;
+	private final ArrayList<SpellCard> spellArea;
+	private final ArrayList<Card> hand;
+	private final ArrayList<Card> graveyard;
 
 	public Field() throws IOException, UnexpectedFormatException {
 
-		monstersArea = new ArrayList<MonsterCard>();
-		spellArea = new ArrayList<SpellCard>();
-		hand = new ArrayList<Card>();
-		graveyard = new ArrayList<Card>();
+		monstersArea = new ArrayList<>();
+		spellArea = new ArrayList<>();
+		hand = new ArrayList<>();
+		graveyard = new ArrayList<>();
 		deck = new Deck();
 
 	}
@@ -100,8 +100,8 @@ public class Field {
 
 	public void removeMonsterToGraveyard(ArrayList<MonsterCard> monsters) {
 
-		for (int i = 0; i < monsters.size(); i++)
-			removeMonsterToGraveyard(monsters.get(i));
+		for (MonsterCard monster : monsters)
+			removeMonsterToGraveyard(monster);
 
 	}
 
@@ -156,9 +156,7 @@ public class Field {
 
 	public void removeSpellToGraveyard(ArrayList<SpellCard> spells) {
 
-		for (int i = 0; i < spells.size(); i++) {
-
-			SpellCard c = spells.get(i);
+		for (SpellCard c : spells) {
 
 			if (!spellArea.contains(c))
 				continue;
@@ -185,7 +183,7 @@ public class Field {
 		ArrayList<MonsterCard> oppMonstersArea = Card.getBoard()
 				.getOpponentPlayer().getField().monstersArea;
 
-		if (m2 == null && oppMonstersArea.size() == 0) {
+		if (m2 == null && oppMonstersArea.isEmpty()) {
 			m1.action();
 		}
 		else if (m2 != null && oppMonstersArea.contains(m2)) {
@@ -269,7 +267,7 @@ public class Field {
 
 	public void addCardToHand() {
 
-		if (deck.getDeck().size() == 0) {
+		if (deck.getDeck().isEmpty()) {
 
 			if (this == Card.getBoard().getActivePlayer().getField())
 				Card.getBoard().setWinner(Card.getBoard().getOpponentPlayer());
@@ -335,15 +333,13 @@ public class Field {
 
 		MonsterCard strongest = new MonsterCard("", "", 0, 0, 0);
 		int strongestValue = 0;
-		for (int i = 0; i < graveyard.size(); i++) {
+		for (Card card : graveyard) {
 
-			if (graveyard.get(i) instanceof MonsterCard) {
+			if (card instanceof MonsterCard monsterCard) {
+				if (monsterCard.getAttackPoints() > strongestValue) {
 
-				if (((MonsterCard) graveyard.get(i)).getAttackPoints() > strongestValue) {
-
-					strongest = (MonsterCard) graveyard.get(i);
-					strongestValue = ((MonsterCard) graveyard.get(i))
-							.getAttackPoints();
+					strongest = monsterCard;
+					strongestValue = monsterCard.getAttackPoints();
 
 				}
 
@@ -351,7 +347,7 @@ public class Field {
 
 		}
 
-		Logger.logs().info("Field - discardHand strongest monster: " + strongest.getName() );
+		Logger.logs().info("Field - discardHand strongest monster: {}", strongest.getName());
 
 		return (strongest);
 
