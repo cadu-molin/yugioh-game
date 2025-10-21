@@ -24,23 +24,15 @@ public class Player implements Duelist {
 	private int lifePoints;
 	private final Field field;
 	private boolean addedMonsterThisTurn;
-	private Color colorHud;
-	private String imagePath;
+	private final Color colorHud;
+	private final String imagePath;
 
 	public String getImagePath() {
 		return imagePath;
 	}
 
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
-	}
-
 	public Color getColorHud() {
 		return colorHud;
-	}
-
-	public void setColorHud(Color colorHud) {
-		this.colorHud = colorHud;
 	}
 
 	public Player(String name, Color colorHud, String imagePath ) throws IOException, UnexpectedFormatException {
@@ -78,7 +70,7 @@ public class Player implements Duelist {
 	@Override
 	public boolean summonMonster(MonsterCard monster) {
 
-		Logger.logs().info("Player - summonMonster monster name: " + monster.getName() );
+		Logger.logs().info("Player - summonMonster monster name: {}", monster.getName());
 		return performMonsterPlacement(monster, null, Mode.ATTACK, false);
 	}
 
@@ -86,14 +78,14 @@ public class Player implements Duelist {
 	public boolean summonMonster(MonsterCard monster,
 			ArrayList<MonsterCard> sacrifices) {
 
-		Logger.logs().info("Player - summonMonster monster name: " + monster.getName() + "sacrifices: " + sacrifices.size());
+		Logger.logs().info("Player - summonMonster monster name: {} sacrifices: {}", monster.getName(), sacrifices.size());
 		return performMonsterPlacement(monster, sacrifices, Mode.ATTACK, false);
 	}
 
 	@Override
 	public boolean setMonster(MonsterCard monster) {
 
-		Logger.logs().info("Player - setMonster monster name: " + monster.getName() );
+		Logger.logs().info("Player - setMonster monster name: {}", monster.getName());
 		return performMonsterPlacement(monster, null, Mode.DEFENSE, true);
 	}
 
@@ -101,14 +93,14 @@ public class Player implements Duelist {
 	public boolean setMonster(MonsterCard monster,
 			ArrayList<MonsterCard> sacrifices) {
 
-		Logger.logs().info("Player - setMonster monster name: " + monster.getName() + " " + "sacrifices: " + sacrifices.size());
+		Logger.logs().info("Player - setMonster monster name: {} sacrifices: {}", monster.getName(), sacrifices.size());
 		return performMonsterPlacement(monster, sacrifices, Mode.DEFENSE, true);
 	}
 
 	@Override
 	public boolean setSpell(SpellCard spell) throws IllegalSpellTargetException {
 
-		Logger.logs().info("Player - setSpell spell name: " + spell.getName() );
+		Logger.logs().info("Player - setSpell spell name: {}", spell.getName());
 
 		if (Card.getBoard().isGameOver())
 			return false;
@@ -116,16 +108,14 @@ public class Player implements Duelist {
 		if (this != Card.getBoard().getActivePlayer())
 			return false;
 
-		boolean spellAdded = this.field.addSpellToField(spell, null, true);
-
-		return spellAdded;
+		return this.field.addSpellToField(spell, null, true);
 
 	}
 
 	@Override
 	public boolean activateSpell(SpellCard spell, MonsterCard monster) throws IllegalSpellTargetException {
 
-		Logger.logs().info("Player - activateSpell spell name: " + spell.getName() + " " + "monster: " + monster );
+		Logger.logs().info("Player - activateSpell spell name: {} monster: {}", spell.getName(), monster);
 
 		if (Card.getBoard().isGameOver())
 			return false;
@@ -133,21 +123,17 @@ public class Player implements Duelist {
 		if (this != Card.getBoard().getActivePlayer())
 			return false;
 
-		boolean spellActivated;
-
 		if (this.field.getSpellArea().contains(spell))
-			spellActivated = this.field.activateSetSpell(spell, monster);
+			return this.field.activateSetSpell(spell, monster);
 		else
-			spellActivated = this.field.addSpellToField(spell, monster, false);
-
-		return spellActivated;
+			return this.field.addSpellToField(spell, monster, false);
 
 	}
 
 	@Override
 	public boolean declareAttack(MonsterCard monster) {
 
-		Logger.logs().info("Player - declareAttack monster name: " + monster.getName() );
+		Logger.logs().info("Player - declareAttack monster name: {}", monster.getName());
 
 		if (Card.getBoard().isGameOver())
 			return false;
@@ -155,9 +141,7 @@ public class Player implements Duelist {
 		if (this != Card.getBoard().getActivePlayer())
 			return false;
 
-		boolean monsterAttacked = this.field.declareAttack(monster, null);
-
-		return monsterAttacked;
+		return this.field.declareAttack(monster, null);
 
 	}
 
@@ -165,7 +149,7 @@ public class Player implements Duelist {
 	public boolean declareAttack(MonsterCard activeMonster,
 			MonsterCard opponentMonster) {
 
-		Logger.logs().info("Player - declareAttack activeMonster name: " + activeMonster.getName() + " " + "opponentMonster name: " + opponentMonster.getName() );
+		Logger.logs().info("Player - declareAttack activeMonster name: {} opponentMonster name: {}", activeMonster.getName(), opponentMonster.getName());
 
 		if (Card.getBoard().isGameOver())
 			return false;
@@ -173,10 +157,7 @@ public class Player implements Duelist {
 		if (this != Card.getBoard().getActivePlayer())
 			return false;
 
-		boolean monsterAttacked = this.field.declareAttack(activeMonster,
-				opponentMonster);
-
-		return monsterAttacked;
+		return this.field.declareAttack(activeMonster, opponentMonster);
 
 	}
 
@@ -212,7 +193,7 @@ public class Player implements Duelist {
 	@Override
 	public boolean switchMonsterMode(MonsterCard monster) {
 
-		Logger.logs().info("Player - switchMonsterMode monster name: " + monster.getName() );
+		Logger.logs().info("Player - switchMonsterMode monster name: {}", monster.getName());
 
 		if (Card.getBoard().isGameOver())
 			return false;
@@ -220,9 +201,7 @@ public class Player implements Duelist {
 		if (this != Card.getBoard().getActivePlayer())
 			return false;
 
-		boolean monsterSwitched = this.field.switchMonsterMode(monster);
-
-		return monsterSwitched;
+		return this.field.switchMonsterMode(monster);
 
 	}
 
@@ -250,12 +229,12 @@ public class Player implements Duelist {
 
 	public void takeDamage(int damage){
 
-		Logger.logs().info("Player - takeDamage Damage: " + damage );
+		Logger.logs().info("Player - takeDamage Damage: {}", damage);
 
 		int lp = getLifePoints();
 		setLifePoints(lp - damage);
 
-		Logger.logs().info("Player - takeDamage Lifepoints: " + getLifePoints() );
+		Logger.logs().info("Player - takeDamage Life Points: {}", getLifePoints());
 
 		playDamageSong();
 
@@ -266,7 +245,7 @@ public class Player implements Duelist {
 		Logger.logs().info("Player - playDamageSong");
 
 		String sourceSong;
-		if(getLifePoints() <=0 ) {
+		if(getLifePoints() <= 0) {
 			sourceSong = "src/main/resources/audios/gritoplayerlose.wav";
 		} else {
 			sourceSong = "src/main/resources/audios/gritoplayer.wav";
@@ -281,7 +260,8 @@ public class Player implements Duelist {
 			clip.start();
 		} catch ( Exception e){
 
-			Logger.logs().error("Player - Exception: " + e + " " + musicPath.getName() );		}
+			Logger.logs().error("Player - Exception: {} {}", e, musicPath.getName());
+		}
 	}
 
 	public String getName() {
