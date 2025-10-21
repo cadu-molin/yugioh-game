@@ -6,6 +6,7 @@ import eg.edu.guc.yugioh.cards.Mode;
 import eg.edu.guc.yugioh.cards.MonsterCard;
 import eg.edu.guc.yugioh.cards.monsterEffect.MonsterEffects;
 import eg.edu.guc.yugioh.cards.spells.SpellCard;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
 import eg.edu.guc.yugioh.exceptions.IllegalSpellTargetException;
 import eg.edu.guc.yugioh.exceptions.GameException;
@@ -39,7 +40,7 @@ public class Field {
 		if (!(hand.contains(monster) && monster.getLocation() == Location.HAND))
 			return false;
 
-		if (monstersArea.size() >= 5)
+		if (monstersArea.size() >= GameConstants.MAX_MONSTERS_ON_FIELD)
 			throw new GameException(GameException.Type.NO_MONSTER_SPACE);
 
 		if (phase == Phase.BATTLE)
@@ -60,14 +61,14 @@ public class Field {
 		if (!(hand.contains(monster) && monster.getLocation() == Location.HAND))
 			return false;
 
-		if (monster.getLevel() <= 4) {
+		if (monster.getLevel() <= GameConstants.MAX_LEVEL_NO_SACRIFICE) {
 			if (sacrifices != null)
 				return false;
-		} else if (monster.getLevel() <= 6) {
-			if (sacrifices.size() != 1)
+		} else if (monster.getLevel() <= GameConstants.MAX_LEVEL_ONE_SACRIFICE) {
+			if (sacrifices.size() != GameConstants.ONE_SACRIFICE)
 				return false;
 		} else {
-			if (sacrifices.size() != 2)
+			if (sacrifices.size() != GameConstants.TWO_SACRIFICES)
 				return false;
 		}
 
@@ -110,7 +111,7 @@ public class Field {
 		if (!hand.contains(spell))
 			return false;
 
-		if (spellArea.size() >= 5)
+		if (spellArea.size() >= GameConstants.MAX_SPELLS_ON_FIELD)
 			throw new GameException(GameException.Type.NO_SPELL_SPACE);
 
 		if (phase == Phase.BATTLE)

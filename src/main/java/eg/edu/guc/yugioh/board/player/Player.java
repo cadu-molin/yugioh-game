@@ -12,6 +12,7 @@ import eg.edu.guc.yugioh.cards.Card;
 import eg.edu.guc.yugioh.cards.Mode;
 import eg.edu.guc.yugioh.cards.MonsterCard;
 import eg.edu.guc.yugioh.cards.spells.SpellCard;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
 import eg.edu.guc.yugioh.exceptions.IllegalSpellTargetException;
 import eg.edu.guc.yugioh.exceptions.GameException;
@@ -45,7 +46,7 @@ public class Player implements Duelist {
 	public Player(String name, Color colorHud, String imagePath ) throws IOException, UnexpectedFormatException {
 
 		this.name = name;
-		this.lifePoints = 8000;
+		this.lifePoints = GameConstants.INITIAL_LIFE_POINTS;
 		this.field = new Field();
 		this.colorHud = colorHud;
 		this.imagePath = imagePath;

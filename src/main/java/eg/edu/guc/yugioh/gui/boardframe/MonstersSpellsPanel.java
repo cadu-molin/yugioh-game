@@ -1,4 +1,5 @@
 package eg.edu.guc.yugioh.gui.boardframe;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
 
 import java.awt.BorderLayout;
@@ -16,7 +17,7 @@ public class MonstersSpellsPanel extends JPanel{
 		setLayout(new BorderLayout());
 		monstersGrid = new MonstersGrid(active);
 		spellsGrid = new SpellsGrid(active);
-		setPreferredSize(new Dimension(CardButton.getDimension('W')*5,300));
+		setPreferredSize(new Dimension(CardButton.getDimension('W')* GameConstants.MAX_SPELLS_ON_FIELD,300));
 		if(!active){
 			add(monstersGrid,BorderLayout.SOUTH);
 			add(spellsGrid,BorderLayout.NORTH);	

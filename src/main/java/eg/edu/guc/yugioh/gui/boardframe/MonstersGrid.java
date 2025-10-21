@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import eg.edu.guc.yugioh.cards.Card;
 import eg.edu.guc.yugioh.cards.Mode;
 import eg.edu.guc.yugioh.cards.MonsterCard;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
 
 @SuppressWarnings("serial")
@@ -16,10 +17,10 @@ public class MonstersGrid extends JPanel {
 	private ArrayList<MonsterCard> monstersArea= new ArrayList<MonsterCard>();
 	private boolean active;
 	public MonstersGrid(boolean active) {
-		setLayout(new GridLayout(1, 5));
-		monsterButtons = new MonsterButton [5]; 
+		setLayout(new GridLayout(1, GameConstants.MAX_MONSTERS_ON_FIELD));
+		monsterButtons = new MonsterButton [GameConstants.MAX_MONSTERS_ON_FIELD];
 		this.active=active;
-			for(int i = 0; i<5 ; i++){
+			for(int i = 0; i<GameConstants.MAX_MONSTERS_ON_FIELD ; i++){
 			monsterButtons[i]= new MonsterButton();
 			add(monsterButtons[i]);     
 		}
@@ -38,7 +39,7 @@ public class MonstersGrid extends JPanel {
 		}else{
 			monstersArea = Card.getBoard().getOpponentPlayer().getField().getMonstersArea();
 		}
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < GameConstants.MAX_MONSTERS_ON_FIELD; i++) {
 			if(i<monstersArea.size()){
 				MonsterCard addedMonster = monstersArea.get(i);
 				monsterButtons[i] = new MonsterButton(addedMonster);
