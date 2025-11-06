@@ -13,7 +13,7 @@ public class DeckTest {
     @Test
     void newDeck_shouldHaveExpectedSize_andDrawReduceSize() throws IOException, UnexpectedFormatException {
         Deck deck = new Deck();
-        // Expected composition: 25 monsters + 7 sacrifices + 5 spells = 37
+
         assertThat(deck.getDeck()).hasSizeGreaterThanOrEqualTo(37);
 
         int before = deck.getDeck().size();

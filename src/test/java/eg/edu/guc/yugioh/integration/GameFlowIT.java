@@ -31,23 +31,19 @@ public class GameFlowIT {
 
     @Test
     void simpleTurn_attackDirectly_reducesOpponentLifePoints() {
-        // Make p1 active deterministically
         board.setActivePlayer(p1);
         board.setOpponentPlayer(p2);
 
-        // Put a monster in p1 hand and summon it
         MonsterCard attacker = new MonsterCard("Attacker", "", 4, 1500, 1000);
         p1.getField().getHand().add(attacker);
         attacker.setLocation(Location.HAND);
         boolean summoned = p1.summonMonster(attacker);
         assertThat(summoned).isTrue();
 
-        // Battle phase and direct attack (opponent has no monsters)
         p1.getField().setPhase(Phase.BATTLE);
         boolean attacked = p1.declareAttack(attacker);
         assertThat(attacked).isTrue();
 
-        // Opponent should lose attacker's ATK life points
         assertThat(p2.getLifePoints()).isEqualTo(8000 - 1500);
     }
 }

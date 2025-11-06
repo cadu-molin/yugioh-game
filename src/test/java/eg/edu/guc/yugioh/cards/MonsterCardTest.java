@@ -57,10 +57,8 @@ public class MonsterCardTest {
         MonsterCard defender = putMonsterOnField(p2, "Def", 4, 0, 1200, Mode.DEFENSE);
         p1.getField().setPhase(Phase.BATTLE);
 
-        // Act
         boolean ok = p1.declareAttack(attacker, defender);
 
-        // Assert: defender removed to graveyard, no LP change asserted
         assertThat(ok).isTrue();
         assertThat(p2.getField().getGraveyard()).contains(defender);
         assertThat(p2.getField().getMonstersArea()).doesNotContain(defender);

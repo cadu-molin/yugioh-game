@@ -42,9 +42,8 @@ public class BoardTest {
     @Test
     void nextPlayer_shouldRotateAndDrawCard() {
         board.startGame(p1, p2);
-        // After start: AP has 6, OP has 5
         board.nextPlayer();
-        // Now both should have 6
+
         assertThat(p1.getField().getHand().size()).isEqualTo(6);
         assertThat(p2.getField().getHand().size()).isEqualTo(6);
         assertThat(board.getActivePlayer()).isNotNull();
@@ -60,7 +59,7 @@ public class BoardTest {
         assertThat(board.getWinner()).isEqualTo(p1);
         assertThat(notified.get()).isEqualTo(p1);
 
-        // Try changing winner after game over: should have no effect
+
         board.setWinner(p2);
         assertThat(board.getWinner()).isEqualTo(p1);
         assertThat(notified.get()).isEqualTo(p1);

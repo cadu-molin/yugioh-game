@@ -52,13 +52,12 @@ public class PlayerFieldTest {
     @Test
     void summonMonster_requiresActivePlayer_andCardInHand() {
         MonsterCard m1 = putMonsterInHand(p2, "Gamma", 4, 1000, 1000);
-        // p2 is opponent; cannot summon
+
         assertThat(p2.summonMonster(m1)).isFalse();
     }
 
     @Test
     void setMonster_withRequiredSacrifices() {
-        // First, place a level 4 monster on field to use as sacrifice using Field API (bypasses per-turn restriction)
         MonsterCard low = putMonsterInHand(p1, "Low", 4, 1000, 1000);
         boolean lowPlaced = p1.getField().addMonsterToField(low, Mode.ATTACK, false);
         assertThat(lowPlaced).isTrue();
@@ -68,7 +67,7 @@ public class PlayerFieldTest {
         sacrifices.add(low);
         boolean placed = p1.getField().addMonsterToField(high, Mode.DEFENSE, sacrifices);
         assertThat(placed).isTrue();
-        // low should be in graveyard
+
         assertThat(p1.getField().getGraveyard()).contains(low);
         assertThat(p1.getField().getMonstersArea()).contains(high);
         assertThat(high.getMode()).isEqualTo(Mode.DEFENSE);
