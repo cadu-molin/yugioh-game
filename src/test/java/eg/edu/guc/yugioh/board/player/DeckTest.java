@@ -1,62 +1,29 @@
 package eg.edu.guc.yugioh.board.player;
 
+import eg.edu.guc.yugioh.cards.Card;
+import eg.edu.guc.yugioh.exceptions.UnexpectedFormatException;
 import org.junit.jupiter.api.Test;
 
-class DeckTest {
+import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class DeckTest {
 
     @Test
-    void loadCardsFromFile() {
-    }
+    void newDeck_shouldHaveExpectedSize_andDrawReduceSize() throws IOException, UnexpectedFormatException {
+        Deck deck = new Deck();
+        // Expected composition: 25 monsters + 7 sacrifices + 5 spells = 37
+        assertThat(deck.getDeck()).hasSizeGreaterThanOrEqualTo(37);
 
-    @Test
-    void drawNCards() {
-    }
+        int before = deck.getDeck().size();
+        Card c1 = deck.drawOneCard();
+        assertThat(deck.getDeck()).hasSize(before - 1);
+        assertThat(c1).isNotNull();
 
-    @Test
-    void drawOneCard() {
-    }
-
-    @Test
-    void getMonsters() {
-    }
-
-    @Test
-    void setMonsters() {
-    }
-
-    @Test
-    void getSpells() {
-    }
-
-    @Test
-    void setSpells() {
-    }
-
-    @Test
-    void getDeck() {
-    }
-
-    @Test
-    void getMonstersPath() {
-    }
-
-    @Test
-    void setMonstersPath() {
-    }
-
-    @Test
-    void getSpellsPath() {
-    }
-
-    @Test
-    void setSpellsPath() {
-    }
-
-    @Test
-    void getMonstersPathSacrifices() {
-    }
-
-    @Test
-    void setMonstersPathSacrifices() {
+        int beforeN = deck.getDeck().size();
+        var list = deck.drawNCards(3);
+        assertThat(list).hasSize(3);
+        assertThat(deck.getDeck()).hasSize(beforeN - 3);
     }
 }
