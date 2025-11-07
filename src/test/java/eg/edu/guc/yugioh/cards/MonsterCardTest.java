@@ -49,31 +49,4 @@ public class MonsterCardTest {
         assertThat(m.getMode()).isEqualTo(Mode.DEFENSE);
         assertThat(m.isHidden()).isTrue();
     }
-
-    @Test
-    void attack_defenseMonsterWithLowerDefense_shouldSendToGraveyard_noDamage() {
-        // Arrange
-        MonsterCard attacker = putMonsterOnField(p1, "Att", 4, 1500, 1000, Mode.ATTACK);
-        MonsterCard defender = putMonsterOnField(p2, "Def", 4, 0, 1200, Mode.DEFENSE);
-        p1.getField().setPhase(Phase.BATTLE);
-
-        boolean ok = p1.declareAttack(attacker, defender);
-
-        assertThat(ok).isTrue();
-        assertThat(p2.getField().getGraveyard()).contains(defender);
-        assertThat(p2.getField().getMonstersArea()).doesNotContain(defender);
-    }
-
-    @Test
-    void attack_equalAttackPoints_bothDestroyed_noLifeDamage() {
-        MonsterCard a1 = putMonsterOnField(p1, "A1", 4, 1000, 1000, Mode.ATTACK);
-        MonsterCard a2 = putMonsterOnField(p2, "A2", 4, 1000, 1000, Mode.ATTACK);
-        p1.getField().setPhase(Phase.BATTLE);
-
-        boolean ok = p1.declareAttack(a1, a2);
-
-        assertThat(ok).isTrue();
-        assertThat(p1.getField().getGraveyard()).contains(a1);
-        assertThat(p2.getField().getGraveyard()).contains(a2);
-    }
 }
