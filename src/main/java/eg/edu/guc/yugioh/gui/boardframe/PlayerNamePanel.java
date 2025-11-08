@@ -11,6 +11,7 @@ import javax.swing.border.LineBorder;
 
 import eg.edu.guc.yugioh.board.player.Phase;
 import eg.edu.guc.yugioh.cards.Card;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 
 @SuppressWarnings("serial")
 public class PlayerNamePanel extends JPanel {
@@ -163,7 +164,7 @@ public class PlayerNamePanel extends JPanel {
 
 		PlayerNamePanel panel = new PlayerNamePanel(true);
 		panel.getplayerNameLabel().setText("Jogador 1");
-		panel.getlifePointsLabel().setText("HP 8000");
+		panel.getlifePointsLabel().setText("HP " + GameConstants.INITIAL_LIFE_POINTS);
 		panel.getCurrentPhaseLabel().setText("Main 1");
 
 		frame.add(panel);

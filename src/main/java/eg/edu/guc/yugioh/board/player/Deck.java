@@ -14,6 +14,7 @@ import eg.edu.guc.yugioh.cards.spells.MonsterReborn;
 import eg.edu.guc.yugioh.cards.spells.PotOfGreed;
 import eg.edu.guc.yugioh.cards.spells.Raigeki;
 import eg.edu.guc.yugioh.cards.spells.SpellCard;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
 import eg.edu.guc.yugioh.exceptions.EmptyFieldException;
 import eg.edu.guc.yugioh.exceptions.MissingFieldException;
@@ -60,7 +61,7 @@ public class Deck {
 					break;
 
 				} catch (UnexpectedFormatException e) {
-					if (trials >= 3) {
+					if (trials >= GameConstants.MAX_FILE_LOAD_ATTEMPTS) {
 						sc.close();
 						throw e;
 					}
@@ -86,7 +87,7 @@ public class Deck {
 					}
 
 				} catch (FileNotFoundException e) {
-					if (trials >= 3) {
+					if (trials >= GameConstants.MAX_FILE_LOAD_ATTEMPTS) {
 						sc.close();
 						throw e;
 					}
@@ -208,9 +209,9 @@ public class Deck {
 
 		Logger.logs().info("Deck - buildDeck monstersSize: " + Monsters.size() + "Deck - buildDeck monstersSacrificesSize: " + MonstersSacrifices.size() + "spellsSize: " + Spells.size() );
 
-		int monstersQouta = 25;
-		int monsterSacrificesQouta = 7;
-		int spellsQouta = 5;
+		int monstersQouta = GameConstants.MONSTERS_QUOTA;
+		int monsterSacrificesQouta = GameConstants.SACRIFICE_MONSTERS_QUOTA;
+		int spellsQouta = GameConstants.SPELLS_QUOTA;
 
 		Random r = new Random();
 

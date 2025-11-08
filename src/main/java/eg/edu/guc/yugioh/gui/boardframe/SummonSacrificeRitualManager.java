@@ -2,6 +2,7 @@ package eg.edu.guc.yugioh.gui.boardframe;
 
 import eg.edu.guc.yugioh.cards.Card;
 import eg.edu.guc.yugioh.cards.MonsterCard;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 import eg.edu.guc.yugioh.gui.GUI;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class SummonSacrificeRitualManager {
     }
 
     public void startRitual(MonsterCard monsterToSummon, boolean isToSummonInAttackMode) throws Exception {
-        int sacrificesNeeded = monsterToSummon.getLevel() < 7 ? 1 : 2;
+        int sacrificesNeeded = monsterToSummon.getLevel() < GameConstants.MIN_LEVEL_TWO_SACRIFICES ? GameConstants.ONE_SACRIFICE : GameConstants.TWO_SACRIFICES;
         this.setSacrificesCount(sacrificesNeeded);
 
         if (Card.getBoard().getActivePlayer().getField().getMonstersArea().size() >= sacrificesNeeded) {

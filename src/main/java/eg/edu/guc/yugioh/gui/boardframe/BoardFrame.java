@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 
 import eg.edu.guc.yugioh.cards.MonsterCard;
 import eg.edu.guc.yugioh.cards.spells.SpellCard;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
 import eg.edu.guc.yugioh.gui.Main;
 import eg.edu.guc.yugioh.gui.otherframes.AnimationPanel;
@@ -247,7 +248,7 @@ public class BoardFrame extends JFrame implements ActionListener {
 
         // Set up a timer to automatically remove the panel after the GIF duration
         // Using 3 seconds as a reasonable default for GIF animations
-        int animationDuration = 3000; // 3 seconds in milliseconds
+        int animationDuration = GameConstants.ANIMATION_DURATION_MS; // 3 seconds in milliseconds
 
         Timer removalTimer = new Timer(animationDuration, new ActionListener() {
             @Override

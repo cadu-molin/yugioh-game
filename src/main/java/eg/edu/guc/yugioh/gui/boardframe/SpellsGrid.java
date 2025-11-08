@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import eg.edu.guc.yugioh.cards.Card;
 import eg.edu.guc.yugioh.cards.spells.SpellCard;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 
 @SuppressWarnings("serial")
 public class SpellsGrid extends JPanel {
@@ -15,10 +16,10 @@ public class SpellsGrid extends JPanel {
 	private ArrayList<SpellCard> spellsArea;
 	private boolean active;
 	public SpellsGrid(boolean active) {
-		setLayout(new GridLayout(1, 5));
-		spellsButtons = new SpellButton [5];
+		setLayout(new GridLayout(1, GameConstants.MAX_SPELLS_ON_FIELD));
+		spellsButtons = new SpellButton [GameConstants.MAX_SPELLS_ON_FIELD];
 		this.active = active;
-		for(int i = 0; i<5 ; i++){
+		for(int i = 0; i<GameConstants.MAX_SPELLS_ON_FIELD ; i++){
 			spellsButtons[i]= new SpellButton();
 			add(spellsButtons[i]);
 		}
@@ -31,7 +32,7 @@ public class SpellsGrid extends JPanel {
 		if(active){
 			spellsArea = Card.getBoard().getActivePlayer().getField().getSpellArea();
 		
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < GameConstants.MAX_SPELLS_ON_FIELD; i++) {
 			if(i<spellsArea.size()){
 				spellsButtons[i] = new SpellButton(spellsArea.get(i));
 				add(spellsButtons[i]);
@@ -39,7 +40,7 @@ public class SpellsGrid extends JPanel {
 		}
 		}else{
 			spellsArea = Card.getBoard().getOpponentPlayer().getField().getSpellArea();
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < GameConstants.MAX_SPELLS_ON_FIELD; i++) {
 				if(i<spellsArea.size()){
 					SpellButton addedSpell = new SpellButton();
 					addedSpell.setIcon(new ImageIcon("images/AttackMode.png"));

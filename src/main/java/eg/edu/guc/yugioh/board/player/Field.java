@@ -6,14 +6,11 @@ import eg.edu.guc.yugioh.cards.Mode;
 import eg.edu.guc.yugioh.cards.MonsterCard;
 import eg.edu.guc.yugioh.cards.monsterEffect.MonsterEffects;
 import eg.edu.guc.yugioh.cards.spells.SpellCard;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
-import eg.edu.guc.yugioh.exceptions.DefenseMonsterAttackException;
 import eg.edu.guc.yugioh.exceptions.IllegalSpellTargetException;
-import eg.edu.guc.yugioh.exceptions.MonsterMultipleAttackException;
-import eg.edu.guc.yugioh.exceptions.NoMonsterSpaceException;
-import eg.edu.guc.yugioh.exceptions.NoSpellSpaceException;
+import eg.edu.guc.yugioh.exceptions.GameException;
 import eg.edu.guc.yugioh.exceptions.UnexpectedFormatException;
-import eg.edu.guc.yugioh.exceptions.WrongPhaseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,17 +19,17 @@ public class Field {
 
 	private Phase phase = Phase.MAIN1;
 	private final Deck deck;
-	private ArrayList<MonsterCard> monstersArea;
-	private ArrayList<SpellCard> spellArea;
-	private ArrayList<Card> hand;
-	private ArrayList<Card> graveyard;
+	private final ArrayList<MonsterCard> monstersArea;
+	private final ArrayList<SpellCard> spellArea;
+	private final ArrayList<Card> hand;
+	private final ArrayList<Card> graveyard;
 
 	public Field() throws IOException, UnexpectedFormatException {
 
-		monstersArea = new ArrayList<MonsterCard>();
-		spellArea = new ArrayList<SpellCard>();
-		hand = new ArrayList<Card>();
-		graveyard = new ArrayList<Card>();
+		monstersArea = new ArrayList<>();
+		spellArea = new ArrayList<>();
+		hand = new ArrayList<>();
+		graveyard = new ArrayList<>();
 		deck = new Deck();
 
 	}
@@ -43,11 +40,11 @@ public class Field {
 		if (!(hand.contains(monster) && monster.getLocation() == Location.HAND))
 			return false;
 
-		if (monstersArea.size() >= 5)
-			throw new NoMonsterSpaceException();
+		if (monstersArea.size() >= GameConstants.MAX_MONSTERS_ON_FIELD)
+			throw new GameException(GameException.Type.NO_MONSTER_SPACE);
 
 		if (phase == Phase.BATTLE)
-			throw new WrongPhaseException();
+			throw new GameException(GameException.Type.WRONG_PHASE);
 
 		hand.remove(monster);
 		monster.setHidden(isHidden);
@@ -64,14 +61,14 @@ public class Field {
 		if (!(hand.contains(monster) && monster.getLocation() == Location.HAND))
 			return false;
 
-		if (monster.getLevel() <= 4) {
+		if (monster.getLevel() <= GameConstants.MAX_LEVEL_NO_SACRIFICE) {
 			if (sacrifices != null)
 				return false;
-		} else if (monster.getLevel() <= 6) {
-			if (sacrifices.size() != 1)
+		} else if (monster.getLevel() <= GameConstants.MAX_LEVEL_ONE_SACRIFICE) {
+			if (sacrifices.size() != GameConstants.ONE_SACRIFICE)
 				return false;
 		} else {
-			if (sacrifices.size() != 2)
+			if (sacrifices.size() != GameConstants.TWO_SACRIFICES)
 				return false;
 		}
 
@@ -103,8 +100,8 @@ public class Field {
 
 	public void removeMonsterToGraveyard(ArrayList<MonsterCard> monsters) {
 
-		for (int i = 0; i < monsters.size(); i++)
-			removeMonsterToGraveyard(monsters.get(i));
+		for (MonsterCard monster : monsters)
+			removeMonsterToGraveyard(monster);
 
 	}
 
@@ -114,11 +111,11 @@ public class Field {
 		if (!hand.contains(spell))
 			return false;
 
-		if (spellArea.size() >= 5)
-			throw new NoSpellSpaceException();
+		if (spellArea.size() >= GameConstants.MAX_SPELLS_ON_FIELD)
+			throw new GameException(GameException.Type.NO_SPELL_SPACE);
 
 		if (phase == Phase.BATTLE)
-			throw new WrongPhaseException();
+			throw new GameException(GameException.Type.WRONG_PHASE);
 
 		hand.remove(spell);
 		spellArea.add(spell);
@@ -137,7 +134,7 @@ public class Field {
 			return false;
 
 		if (phase == Phase.BATTLE)
-			throw new WrongPhaseException();
+			throw new GameException(GameException.Type.WRONG_PHASE);
 
 		spell.action(monster);
 		removeSpellToGraveyard(spell);
@@ -159,9 +156,7 @@ public class Field {
 
 	public void removeSpellToGraveyard(ArrayList<SpellCard> spells) {
 
-		for (int i = 0; i < spells.size(); i++) {
-
-			SpellCard c = spells.get(i);
+		for (SpellCard c : spells) {
 
 			if (!spellArea.contains(c))
 				continue;
@@ -177,18 +172,18 @@ public class Field {
 	public boolean declareAttack(MonsterCard m1, MonsterCard m2) {
 
 		if (phase != Phase.BATTLE)
-			throw new WrongPhaseException();
+			throw new GameException(GameException.Type.WRONG_PHASE);
 
 		if (m1.getMode() != Mode.ATTACK)
-			throw new DefenseMonsterAttackException();
+			throw new GameException(GameException.Type.DEFENSE_MONSTER_ATTACK);
 
 		if (m1.isAttacked())
-			throw new MonsterMultipleAttackException();
+			throw new GameException(GameException.Type.MONSTER_MULTIPLE_ATTACK);
 
 		ArrayList<MonsterCard> oppMonstersArea = Card.getBoard()
 				.getOpponentPlayer().getField().monstersArea;
 
-		if (m2 == null && oppMonstersArea.size() == 0) {
+		if (m2 == null && oppMonstersArea.isEmpty()) {
 			m1.action();
 		}
 		else if (m2 != null && oppMonstersArea.contains(m2)) {
@@ -258,7 +253,7 @@ public class Field {
 			return false;
 
 		if (phase == Phase.BATTLE)
-			throw new WrongPhaseException();
+			throw new GameException(GameException.Type.WRONG_PHASE);
 
 		if (monster.isSwitchedMode())
 			return false;
@@ -272,7 +267,7 @@ public class Field {
 
 	public void addCardToHand() {
 
-		if (deck.getDeck().size() == 0) {
+		if (deck.getDeck().isEmpty()) {
 
 			if (this == Card.getBoard().getActivePlayer().getField())
 				Card.getBoard().setWinner(Card.getBoard().getOpponentPlayer());
@@ -338,15 +333,13 @@ public class Field {
 
 		MonsterCard strongest = new MonsterCard("", "", 0, 0, 0);
 		int strongestValue = 0;
-		for (int i = 0; i < graveyard.size(); i++) {
+		for (Card card : graveyard) {
 
-			if (graveyard.get(i) instanceof MonsterCard) {
+			if (card instanceof MonsterCard monsterCard) {
+				if (monsterCard.getAttackPoints() > strongestValue) {
 
-				if (((MonsterCard) graveyard.get(i)).getAttackPoints() > strongestValue) {
-
-					strongest = (MonsterCard) graveyard.get(i);
-					strongestValue = ((MonsterCard) graveyard.get(i))
-							.getAttackPoints();
+					strongest = monsterCard;
+					strongestValue = monsterCard.getAttackPoints();
 
 				}
 
@@ -354,7 +347,7 @@ public class Field {
 
 		}
 
-		Logger.logs().info("Field - discardHand strongest monster: " + strongest.getName() );
+		Logger.logs().info("Field - discardHand strongest monster: {}", strongest.getName());
 
 		return (strongest);
 
