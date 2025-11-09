@@ -6,6 +6,7 @@ import java.util.Random;
 
 import eg.edu.guc.yugioh.board.player.Player;
 import eg.edu.guc.yugioh.cards.Card;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 
 public class Board {
 
@@ -36,8 +37,8 @@ public class Board {
 
 	public void startGame(Player p1, Player p2) {
 
-		p1.addNCardsToHand(5);
-		p2.addNCardsToHand(5);
+		p1.addNCardsToHand(GameConstants.INITIAL_HAND_SIZE);
+		p2.addNCardsToHand(GameConstants.INITIAL_HAND_SIZE);
 
 		whoStarts(p1, p2);
 

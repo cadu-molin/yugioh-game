@@ -14,7 +14,7 @@ import eg.edu.guc.yugioh.cards.Location;
 import eg.edu.guc.yugioh.cards.MonsterCard;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
 import eg.edu.guc.yugioh.exceptions.IllegalSpellTargetException;
-import eg.edu.guc.yugioh.exceptions.WrongPhaseException;
+import eg.edu.guc.yugioh.exceptions.GameException;
 import eg.edu.guc.yugioh.gui.GUI;
 
 @SuppressWarnings("serial")
@@ -107,7 +107,7 @@ public class MonsterButton extends CardButton implements ActionListener{
 		//bug start fix
 		if(GUI.getBoardFrame().getSpellToActivate()!=null){
 			GUI.getBoardFrame().setSpellToActivate(null);
-			GUI.errorFrame(new WrongPhaseException());
+			GUI.errorFrame(new GameException(GameException.Type.WRONG_PHASE));
 		}
 		//bug end fix
 		if(GUI.getBoardFrame().getAttackingMonster()!=null){

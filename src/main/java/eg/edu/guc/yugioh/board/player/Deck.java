@@ -14,6 +14,7 @@ import eg.edu.guc.yugioh.cards.spells.MonsterReborn;
 import eg.edu.guc.yugioh.cards.spells.PotOfGreed;
 import eg.edu.guc.yugioh.cards.spells.Raigeki;
 import eg.edu.guc.yugioh.cards.spells.SpellCard;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 import eg.edu.guc.yugioh.configsGlobais.Logger;
 import eg.edu.guc.yugioh.exceptions.EmptyFieldException;
 import eg.edu.guc.yugioh.exceptions.MissingFieldException;
@@ -31,10 +32,6 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Deck {
-	private static final int MONSTER_QUOTA = 25;
-	private static final int MONSTER_SACRIFICE_QUOTA = 7;
-	private static final int SPELL_QUOTA = 5;
-
 	private static ArrayList<Card> monsters;
 
 	private static ArrayList<Card> monstersSacrifices;
@@ -63,7 +60,7 @@ public class Deck {
 					break;
 
 				} catch (UnexpectedFormatException e) {
-					if (trials >= 3) {
+					if (trials >= GameConstants.MAX_FILE_LOAD_ATTEMPTS) {
 						sc.close();
 						throw e;
 					}
@@ -89,7 +86,7 @@ public class Deck {
 					}
 
 				} catch (FileNotFoundException e) {
-					if (trials >= 3) {
+					if (trials >= GameConstants.MAX_FILE_LOAD_ATTEMPTS) {
 						sc.close();
 						throw e;
 					}
@@ -198,11 +195,10 @@ public class Deck {
 
 		Logger.logs().info("Deck - buildDeck monstersSize: " + Monsters.size() + "Deck - buildDeck monstersSacrificesSize: " + MonstersSacrifices.size() + "spellsSize: " + Spells.size() );
 
-		addRandomMonsters(monsters, MONSTER_QUOTA);
-		addRandomMonsters(monstersSacrifices, MONSTER_SACRIFICE_QUOTA);
-		addRandomSpells(spells, SPELL_QUOTA);
+		addRandomMonsters(monsters, GameConstants.MONSTERS_QUOTA);
+		addRandomMonsters(monstersSacrifices, GameConstants.SACRIFICE_MONSTERS_QUOTA);
+		addRandomSpells(spells, GameConstants.SPELLS_QUOTA);
 	}
-
 	private void addRandomMonsters(ArrayList<Card> source, int quantity) {
 		Random r = new Random();
 		for (int i = 0; i < quantity; i++) {

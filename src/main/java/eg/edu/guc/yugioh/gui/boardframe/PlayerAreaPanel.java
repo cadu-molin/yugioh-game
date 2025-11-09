@@ -1,6 +1,7 @@
 package eg.edu.guc.yugioh.gui.boardframe;
 
 import eg.edu.guc.yugioh.cards.Card;
+import eg.edu.guc.yugioh.configsGlobais.GameConstants;
 
 import java.awt.*;
 import javax.swing.*;
@@ -43,13 +44,13 @@ public class PlayerAreaPanel extends JPanel {
 	public void updatePlayerImage() {
 
 		if (active) {
-			activeImage.setIcon(resizeIcon(Card.getBoard().getActivePlayer().getImagePath(), 100, 100));
-			activeImage.setBorder(new LineBorder(Card.getBoard().getActivePlayer().getColorHud(), 3));
+			activeImage.setIcon(resizeIcon(Card.getBoard().getActivePlayer().getImagePath(), GameConstants.PLAYER_IMAGE_SIZE, GameConstants.PLAYER_IMAGE_SIZE));
+			activeImage.setBorder(new LineBorder(Card.getBoard().getActivePlayer().getColorHud(), GameConstants.BORDER_WIDTH));
 			return;
 		}
 
-		activeImage.setIcon(resizeIcon(Card.getBoard().getOpponentPlayer().getImagePath(), 100, 100));
-		activeImage.setBorder(new LineBorder(Card.getBoard().getOpponentPlayer().getColorHud(), 3));
+		activeImage.setIcon(resizeIcon(Card.getBoard().getOpponentPlayer().getImagePath(), GameConstants.PLAYER_IMAGE_SIZE, GameConstants.PLAYER_IMAGE_SIZE));
+		activeImage.setBorder(new LineBorder(Card.getBoard().getOpponentPlayer().getColorHud(), GameConstants.BORDER_WIDTH));
 
 	}
 
